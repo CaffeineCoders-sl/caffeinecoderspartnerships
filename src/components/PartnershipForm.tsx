@@ -199,11 +199,8 @@ const PartnershipForm = () => {
     setEmailError(null);
 
     try {
-      // Try sending via EmailJS REST API if env vars are set
-      const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
-
+      // Send via a serverless function so secrets never land in the client bundle.
+      // The Netlify function reads server-side env vars like EMAILJS_SERVICE_ID.
       const buildBody = () => {
         // Flatten arrays to comma separated strings for email body/template
         const flat: Record<string, string> = {};
@@ -218,25 +215,25 @@ const PartnershipForm = () => {
         to_email: 'caffeinecoders.sl@gmail.com',
         ...buildBody()
       };
-
-      if (SERVICE_ID && TEMPLATE_ID && USER_ID) {
-        const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      // Attempt sending through the Netlify Function.
+      try {
+        const res = await fetch('/.netlify/functions/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            service_id: SERVICE_ID,
-            template_id: TEMPLATE_ID,
-            user_id: USER_ID,
-            template_params
-          })
+          body: JSON.stringify({ templateParams: template_params }),
         });
 
         if (!res.ok) {
+          // fallback to mail client if function fails for any reason
           const text = await res.text();
-          throw new Error(`EmailJS error: ${res.status} ${text}`);
+          console.warn('Server email function failed:', res.status, text);
+          const subject = encodeURIComponent(`Partnership Request from ${formData.name || 'Website'}`);
+          const body = encodeURIComponent(Object.entries(template_params).map(([k, v]) => `${k}: ${v}`).join('\n'));
+          window.location.href = `mailto:caffeinecoders.sl@gmail.com?subject=${subject}&body=${body}`;
         }
-      } else {
-        // Fallback: open user's mail client with prefilled mailto (best-effort)
+      } catch (err) {
+        // Network / unexpected errors - fallback to mailto
+        console.error('Failed to call server email function', err);
         const subject = encodeURIComponent(`Partnership Request from ${formData.name || 'Website'}`);
         const body = encodeURIComponent(Object.entries(template_params).map(([k, v]) => `${k}: ${v}`).join('\n'));
         window.location.href = `mailto:caffeinecoders.sl@gmail.com?subject=${subject}&body=${body}`;
