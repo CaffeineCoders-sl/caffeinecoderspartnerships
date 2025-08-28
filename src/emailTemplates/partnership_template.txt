@@ -1,0 +1,12 @@
+New Partnership Request
+
+Name: {{from_name}}
+Company: {{company_name}}
+Email: {{reply_to}}
+Services Interested In: {{services_interested}}
+
+Message:
+{{message}}
+
+--
+Website Contact Form

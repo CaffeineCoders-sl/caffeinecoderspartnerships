@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Partnership Request</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; color: #111; background: #f8fafc; }
+      .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 8px; }
+      .header { background: #0ea5e9; color: #fff; padding: 12px; border-radius: 6px; text-align: center; }
+      .field { margin: 14px 0; }
+      .label { font-weight: 700; color: #334155; margin-bottom: 6px; }
+      .value { padding: 10px; background: #f1f5f9; border-radius: 6px; color: #0f172a; }
+      .footer { margin-top: 20px; color: #475569; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1 style="margin:0;font-size:18px;">New Partnership Request</h1>
+      </div>
+
+      <p>Hello team,</p>
+
+      <p>You have received a new partnership request from the website. Summary below:</p>
+
+      <div class="field">
+        <div class="label">Name</div>
+        <div class="value">{{from_name}}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">Company</div>
+        <div class="value">{{company_name}}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">Email</div>
+        <div class="value">{{reply_to}}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">Services Interested In</div>
+        <div class="value">{{services_interested}}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">Message</div>
+        <div class="value">{{message}}</div>
+      </div>
+
+      <p class="footer">Best,
+      <br/>Your Website Contact Form</p>
+    </div>
+  </body>
+</html>
